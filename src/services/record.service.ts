@@ -1,6 +1,6 @@
 import { ServiceAPIResponse } from '../../types/service-response'
 import logger from '../common/logger'
-import Record from '../models/factory /record'
+import Record from '../models/factory/record'
 import { IRecord } from '../models/types'
 
 const getAll = async () : Promise<ServiceAPIResponse<Record[]>> => {

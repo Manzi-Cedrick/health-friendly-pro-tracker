@@ -1,6 +1,6 @@
 import { ServiceAPIResponse } from '../../types/service-response'
 import logger from '../common/logger'
-import Patient from '../models/factory /patient'
+import Patient from '../models/factory/patient'
 import { IPatient } from '../models/types'
 
 const getAll = async () : Promise<ServiceAPIResponse<Patient[]>> => {
