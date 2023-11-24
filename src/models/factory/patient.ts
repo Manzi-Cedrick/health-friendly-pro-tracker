@@ -6,7 +6,7 @@ class Patient extends Model {}
 
 Patient.init({
     _id: {
-        type: DataTypes.UUID,
+        type: DataTypes.STRING,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
     },

@@ -1,7 +1,7 @@
 import serial
 import requests
 
-ser = serial.Serial("/dev/cu.usbmodem2017_2_251", 9600, timeout=1)
+ser = serial.Serial("/dev/cu.usbserial-1120", 9600, timeout=1)
 
 # API endpoint URL
 api_url = "http://localhost:8080/records"

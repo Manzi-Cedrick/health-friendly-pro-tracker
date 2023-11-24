@@ -1,5 +1,6 @@
 import { ServiceAPIResponse } from '../../types/service-response'
 import logger from '../common/logger'
+import Patient from '../models/factory/patient'
 import Record from '../models/factory/record'
 import { IRecord } from '../models/types'
 
@@ -34,32 +35,39 @@ const getById = async (id: string) : Promise<ServiceAPIResponse<Record>> => {
     } 
 }
 const create = async (patient: IRecord) : Promise<ServiceAPIResponse<Record>> => {
-    try {
-        const newRecord = await Record.create({
-            patient_id: patient.patient_id,
-            body_temperature: patient.body_temperature,
-            heart_rate: patient.heart_rate,
-        })
-        return {
-            statusCode: 201,
-            body: newRecord,
-            message: 'Record created',
+    if ((await checkPatientId(patient.patient_id)).statusCode === 200) {
+        try {
+            const newRecord = await Record.create({
+                patient_id: patient.patient_id,
+                body_temperature: patient.body_temperature,
+                heart_rate: patient.heart_rate,
+            })
+            return {
+                statusCode: 201,
+                body: newRecord,
+                message: 'Record created',
+            }
+        } catch (error: any) {
+            logger.error(error.message)
+            let statusCode = 404
+            if (error.name === 'SequelizeValidationError') {
+                statusCode = 422
+            } else if (error.name === 'SequelizeUniqueConstraintError') {
+                statusCode = 409
+            } else {    
+                statusCode = 500
+            }
+            return {
+                statusCode: statusCode,
+                body: {} as Record,
+                message: 'Error creating record: ' + error.message,
+            }
         }
-    } catch (error: any) {
-        logger.error(error.message)
-        let statusCode = 404
-        if (error.name === 'SequelizeValidationError') {
-            statusCode = 422
-        } else if (error.name === 'SequelizeUniqueConstraintError') {
-            statusCode = 409
-        } else {
-            statusCode = 500
-        }
-        return {
-            statusCode: statusCode,
-            body: {} as Record,
-            message: 'Error creating record: ' + error.message,
-        }
+    }
+    return {
+        statusCode: 404,
+        body: {} as Record,
+        message: 'No patient found',
     }
 }
 const update = async (id: string, patient: IRecord) : Promise<ServiceAPIResponse<Record>> => {
@@ -110,4 +118,23 @@ const remove = async (id: string) : Promise<ServiceAPIResponse<Record>> => {
         }
     }        
 }
-export {getAll, getById, create, update, remove}
+const checkPatientId = async (patient_id: string) : Promise<ServiceAPIResponse<Record>> => {
+    const record = await Patient.findAll({
+        where: {
+            _id: patient_id,
+        },
+    })
+    if (!record) {
+        return {
+            statusCode: 404,
+            body: {} as Record,
+            message: 'No record found',
+        } 
+    }
+    return {
+        statusCode: 200,
+        body: record[0],
+        message: 'Record found',
+    } 
+}   
+export {getAll, getById, create, update, remove, checkPatientId}

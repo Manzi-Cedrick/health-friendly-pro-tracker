@@ -1,7 +1,7 @@
 # Use Node.js 14 image.
 # can't find one for 16
 # https://hub.docker.com/_/node
-FROM node:18
+FROM node:18-alpine
 
 # Create and change to the app directory.
 WORKDIR /usr/src/app
