@@ -12,7 +12,7 @@ Record.init({
         primaryKey: true,
     },
     patient_id: {
-        type: DataTypes.UUID,
+        type: DataTypes.STRING,
         allowNull: false,
         references: {
             model: Patient,
