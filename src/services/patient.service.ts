@@ -39,6 +39,7 @@ const create = async (patient: IPatient) : Promise<ServiceAPIResponse<Patient>> 
             patient_name: patient.patient_name,
             national_id: patient.national_id,
             frequent_sickness: patient.frequent_sickness,
+            _id: patient?._id,
         })
         return {
             statusCode: 201,
